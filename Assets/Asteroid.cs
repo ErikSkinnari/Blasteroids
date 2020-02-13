@@ -27,5 +27,6 @@ public class Asteroid : MonoBehaviour
     {
         // Boom
         Debug.Log("Asteroid destroyed!");
+        Destroy(gameObject);
     }
 }

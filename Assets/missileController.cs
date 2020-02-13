@@ -20,7 +20,6 @@ public class missileController : MonoBehaviour
         Asteroid asteroid = collision.GetComponent<Asteroid>();
         if (asteroid != null)
         {
-
             // Destroy asteroid and play some kind of animation.
             asteroid.Blast();
         }

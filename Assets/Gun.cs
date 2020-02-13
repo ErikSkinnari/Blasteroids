@@ -8,7 +8,6 @@ public class Gun : MonoBehaviour
 
     public GameObject missilePrefab;
 
-
     // Update is called once per frame
     void Update()
     {

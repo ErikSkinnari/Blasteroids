@@ -63,15 +63,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\2D Space Kit\Scripts\AimBeam.cs" />
-    <Compile Include="Assets\2D Space Kit\Scripts\Crosshair.cs" />
-    <Compile Include="Assets\2D Space Kit\Scripts\CustomPointer.cs" />
-    <Compile Include="Assets\2D Space Kit\Scripts\ExampleShipControl.cs" />
-    <Compile Include="Assets\2D Space Kit\Scripts\PSDestroy.cs" />
-    <Compile Include="Assets\2D Space Kit\Scripts\ParallaxLayer.cs" />
-    <Compile Include="Assets\2D Space Kit\Scripts\PlayerControlledTurret.cs" />
-    <Compile Include="Assets\2D Space Kit\Scripts\Projectile.cs" />
-    <Compile Include="Assets\2D Space Kit\Scripts\ShipCamera.cs" />
     <Compile Include="Assets\Asteroid.cs" />
     <Compile Include="Assets\Gun.cs" />
     <Compile Include="Assets\PlayerBehaviour.cs" />
@@ -82,7 +73,6 @@
     <None Include="Assets\2D Space Kit\Background Elements\Stars\Recolor Us!.txt" />
     <None Include="Assets\2D Space Kit\Particles (Sprites)\Note on Flares.txt" />
     <None Include="Assets\2D Space Kit\Backgrounds\Fantasy Purple 2048\Note.txt" />
-    <None Include="Assets\2D Space Kit\Scripts\WARNING.txt" />
     <None Include="Assets\2D Space Kit\Ships and Stations\Rendering Tip.txt" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/008_projects/004_programming/006_games/Blasteroids/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
