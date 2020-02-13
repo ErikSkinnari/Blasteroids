@@ -8,6 +8,8 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField]
     private float rotationSpeed;
 
+    public GameObject thruster;
+
     public Rigidbody2D rb;
     Renderer[] renderers;
     bool isWrappingX = false;
@@ -20,6 +22,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         thrust = 50f;
         rotationSpeed = 400f;
+        thruster.SetActive(false);
         rb = GetComponent<Rigidbody2D>();
         renderers = GetComponents<Renderer>();
     }
@@ -45,11 +48,11 @@ public class PlayerBehaviour : MonoBehaviour
 
         if(thrustInput > 0)
         {
-            Debug.Log("Thrusting");
+            thruster.SetActive(true);
         }
         else
         {
-            Debug.Log("Not thrusting");
+            thruster.SetActive(false);
         }
 
         // Set acceleration to thrust * deltaTime IF player presses up.
@@ -65,7 +68,6 @@ public class PlayerBehaviour : MonoBehaviour
         // Rotate the ship
         transform.Rotate(0, 0, rotationValue, Space.Self);
 
-        Debug.Log("Just before Screenwrap!");
         ScreenWrap();
     }
 
@@ -109,5 +111,10 @@ public class PlayerBehaviour : MonoBehaviour
         }
         // Set the player position to the updated position.
         transform.position = newPosition;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log(collision.name);
     }
 }
