@@ -6,7 +6,7 @@ public class Gun : MonoBehaviour
 {
     public Transform barrelPoint;
 
-    public GameObject missilePrefab;
+    public GameObject MissilePrefab;
 
     // Update is called once per frame
     void Update()
@@ -19,6 +19,6 @@ public class Gun : MonoBehaviour
 
     void Fire()
     {
-        Instantiate(missilePrefab, barrelPoint.position, barrelPoint.rotation);
+        Instantiate(MissilePrefab, barrelPoint.position, barrelPoint.rotation);
     }
 }

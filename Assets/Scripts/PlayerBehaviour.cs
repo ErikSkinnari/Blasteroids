@@ -2,10 +2,8 @@
 
 public class PlayerBehaviour : MonoBehaviour
 {
-    [SerializeField]
     private float thrust;
 
-    [SerializeField]
     private float rotationSpeed;
 
     public GameObject thruster;
