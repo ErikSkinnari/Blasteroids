@@ -29,13 +29,14 @@ public class MissileController : MonoBehaviour
         // If collission is with ship, return
         if(collision.GetComponent<PlayerBehaviour>() != null) return;
 
-        Debug.Log(collision.name);
-        Asteroid asteroid = collision.GetComponent<Asteroid>();
-        if (asteroid != null)
+        if (collision.GetComponent<Asteroid>() != null)
         {
-            // Destroy asteroid and play some kind of animation.
-            // TODO Animation
-            asteroid.Blast();
+            collision.GetComponent<Asteroid>().Blast();
+        }
+
+        if (collision.GetComponent<AsteroidSmall>() != null)
+        {
+            collision.GetComponent<AsteroidSmall>().Blast();
         }
         
         Destroy(gameObject);

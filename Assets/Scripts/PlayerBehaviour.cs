@@ -4,7 +4,7 @@ public class PlayerBehaviour : MonoBehaviour
 {
     private float thrust;
 
-    private float rotationSpeed;
+    public float rotationSpeed;
 
     public GameObject thruster;
 
@@ -44,22 +44,25 @@ public class PlayerBehaviour : MonoBehaviour
         var rotationInput = Input.GetAxis("Horizontal");
         var thrustInput = Input.GetAxis("Vertical");
 
-        if(thrustInput > 0)
+        var acceleration = new Vector2();
+
+        if (thrustInput > 0)
         {
             thruster.SetActive(true);
+
+            // Set acceleration to thrust * deltaTime IF player presses up.
+
+            acceleration.y = thrustInput * thrust * Time.deltaTime;
+            
         }
         else
         {
             thruster.SetActive(false);
         }
 
-        // Set acceleration to thrust * deltaTime IF player presses up.
-        var acceleration = new Vector2
-        {
-            y = thrustInput * thrust * Time.deltaTime
-        };
         // Add the acceleration to the ship
         rb.AddRelativeForce(acceleration);
+
 
         // Set rotation depending on left/right input
         var rotationValue = -rotationInput * rotationSpeed * Time.deltaTime;
