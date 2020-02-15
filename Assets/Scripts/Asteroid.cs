@@ -2,17 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Asteroid : MonoBehaviour
+public class Asteroid : Wrappable
 {
-    private int generation;
     public Rigidbody2D rb;
     public GameObject AsteroidSmallPrefab;
-    float smallSpeed = 20f;
-    
+    readonly float velocityValue = 30f;
+
+    private void Start()
+    {
+        rb = this.GetComponent<Rigidbody2D>();
+        rb.AddRelativeForce(new Vector2(Random.Range(-velocityValue, velocityValue), Random.Range(-velocityValue, velocityValue)));
+    }
+
     // Update is called once per frame
     void Update()
     {
-
+        transform.position = WrappingBehaviour.WrappingUpdate(this);
     }
 
     public void Blast()
@@ -21,8 +26,7 @@ public class Asteroid : MonoBehaviour
         Debug.Log("Asteroid destroyed!");
         for (int i = 0; i < 3; i++)
         {
-            GameObject smallAsteroid = Instantiate(AsteroidSmallPrefab, gameObject.transform.position, gameObject.transform.rotation);
-            smallAsteroid.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(Random.Range(-smallSpeed, smallSpeed), Random.Range(-smallSpeed, smallSpeed)));
+            Instantiate(AsteroidSmallPrefab, gameObject.transform.position, gameObject.transform.rotation);            
         }
         
         Destroy(gameObject);

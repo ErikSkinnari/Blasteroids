@@ -68,6 +68,8 @@
     <Compile Include="Assets\Scripts\Gun.cs" />
     <Compile Include="Assets\Scripts\MissileController.cs" />
     <Compile Include="Assets\Scripts\PlayerBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Wrappable.cs" />
+    <Compile Include="Assets\Scripts\WrappingBehaviour.cs" />
     <None Include="Assets\2D Space Kit\Backgrounds\Background Tip.txt" />
     <None Include="Assets\2D Space Kit\Readme.txt" />
     <None Include="Assets\2D Space Kit\Background Elements\Planets\Planet Masks\Note.txt" />
