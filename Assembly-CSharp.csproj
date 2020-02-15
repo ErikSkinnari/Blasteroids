@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Asteroid.cs" />
     <Compile Include="Assets\Scripts\AsteroidSmall.cs" />
+    <Compile Include="Assets\Scripts\AsteroidSpawner.cs" />
     <Compile Include="Assets\Scripts\Gun.cs" />
     <Compile Include="Assets\Scripts\MissileController.cs" />
     <Compile Include="Assets\Scripts\PlayerBehaviour.cs" />

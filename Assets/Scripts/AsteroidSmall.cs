@@ -6,14 +6,14 @@ public class AsteroidSmall : Wrappable
 {
     private int generation;
     public Rigidbody2D rb;
+    public GameObject Explosion;
     float rotation;
-    float rotationSpeedMin = -10f;
-    float rotationSpeedMax = 10f;
-    readonly float velocityValue = 40f;
+    float rotationSpeed = 10f;
+    readonly float velocityValue = 80f;
 
     private void Start()
     {
-        rotation = Random.Range(rotationSpeedMin, rotationSpeedMax);
+        rotation = Random.Range(-rotationSpeed, rotationSpeed);
         //gameObject.GetComponent<Rigidbody2D>()
         rb.AddRelativeForce(new Vector2(Random.Range(-velocityValue, velocityValue), Random.Range(-velocityValue, velocityValue)));
         //camera = GetComponent<Camera>();
@@ -28,6 +28,7 @@ public class AsteroidSmall : Wrappable
 
     public void Blast()
     {
+        Instantiate(Explosion, gameObject.transform.position, gameObject.transform.rotation);
         Destroy(gameObject);
     }
 }

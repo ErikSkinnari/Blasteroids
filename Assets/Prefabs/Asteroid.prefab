@@ -138,3 +138,5 @@ MonoBehaviour:
   rb: {fileID: 6984115622196932074}
   AsteroidSmallPrefab: {fileID: 5708387815682907872, guid: c71aac25edf5a4b4ca71df8f8570765b,
     type: 3}
+  Explosion: {fileID: 7735575973740944155, guid: 8149048a17f208f4e8fb82fcda49437a,
+    type: 3}
