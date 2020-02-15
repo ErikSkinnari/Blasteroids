@@ -28,7 +28,10 @@ public class AsteroidSmall : Wrappable
 
     public void Blast()
     {
-        Instantiate(Explosion, gameObject.transform.position, gameObject.transform.rotation);
+        var explosionAnimation = Instantiate(Explosion, gameObject.transform.position, gameObject.transform.rotation);
+        ParticleSystem particles = explosionAnimation.GetComponent<ParticleSystem>();
+        float explosionDuration = particles.duration + particles.startLifetime;
+        Destroy(explosionAnimation, explosionDuration);
         Destroy(gameObject);
     }
 }
