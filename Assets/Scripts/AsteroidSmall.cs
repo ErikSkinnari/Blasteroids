@@ -2,36 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AsteroidSmall : Wrappable
+public class AsteroidSmall : Asteroid
 {
-    private int generation;
-    public Rigidbody2D rb;
-    public GameObject Explosion;
-    float rotation;
-    float rotationSpeed = 10f;
-    readonly float velocityValue = 80f;
-
-    private void Start()
+    private void Awake()
     {
-        rotation = Random.Range(-rotationSpeed, rotationSpeed);
-        //gameObject.GetComponent<Rigidbody2D>()
-        rb.AddRelativeForce(new Vector2(Random.Range(-velocityValue, velocityValue), Random.Range(-velocityValue, velocityValue)));
-        //camera = GetComponent<Camera>();
+        velocityValue = 80f;
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void Blast()
     {
-        transform.Rotate(0, 0, rotation * Time.deltaTime, Space.Self);
-        transform.position = WrappingBehaviour.WrappingUpdate(this);
-    }
-
-    public void Blast()
-    {
+        FindObjectOfType<AudioManager>().Play("hit");
         var explosionAnimation = Instantiate(Explosion, gameObject.transform.position, gameObject.transform.rotation);
-        ParticleSystem particles = explosionAnimation.GetComponent<ParticleSystem>();
-        float explosionDuration = particles.duration + particles.startLifetime;
-        Destroy(explosionAnimation, explosionDuration);
+        Destroy(explosionAnimation, explosionAnimation.GetComponent<ParticleSystem>().main.duration);
         Destroy(gameObject);
     }
 }

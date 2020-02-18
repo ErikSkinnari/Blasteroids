@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MissileController : MonoBehaviour
 {
+    public delegate void AsteroidHitter();
+    public static event AsteroidHitter AsteroidHit;
     public float missileSpeed;
     public Camera mainCamera;
 
@@ -12,7 +14,8 @@ public class MissileController : MonoBehaviour
     void Start()
     {
         missileSpeed = 10f;
-        rb.velocity = transform.up * missileSpeed;        
+        rb.velocity = transform.up * missileSpeed;
+        FindObjectOfType<AudioManager>().Play("shot");
     }
 
     void Update()
@@ -38,7 +41,9 @@ public class MissileController : MonoBehaviour
         {
             collision.GetComponent<AsteroidSmall>().Blast();
         }
-        
+
+        AsteroidHit?.Invoke();
+
         Destroy(gameObject);
     }
 

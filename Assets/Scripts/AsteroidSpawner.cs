@@ -4,18 +4,23 @@ using UnityEngine;
 
 public class AsteroidSpawner : MonoBehaviour
 {
-    public GameObject asteroidPrefab;
-    public int level;
+    public GameObject _asteroidPrefab;
+    public GameObject _smallAsteroidPrefab;
 
-    private void Start()
+    public void SpawnAsteroids(int level)
     {
-        level = 1;
         for (int i = 0; i < level * 2 + 5; i++)
         {
             Vector2 randomPositionOnScreen = Camera.main.ViewportToWorldPoint(new Vector2(Random.value, Random.value));
-            Instantiate(asteroidPrefab, randomPositionOnScreen, Quaternion.identity);
+            Instantiate(_asteroidPrefab, randomPositionOnScreen, Quaternion.identity);
+        }
+
+        int smallAsteroids = Random.Range(0, level * 2);
+
+        for (int i = 0; i < smallAsteroids; i++)
+        {
+            Vector2 randomPositionOnScreen = Camera.main.ViewportToWorldPoint(new Vector2(Random.value, Random.value));
+            Instantiate(_smallAsteroidPrefab, randomPositionOnScreen, Quaternion.identity);
         }
     }
-
-
 }

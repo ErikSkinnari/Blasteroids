@@ -2,6 +2,8 @@
 
 public class PlayerBehaviour : Wrappable
 {
+    public delegate void PlayerDamage();
+    public static event PlayerDamage PlayerHit;
     private float thrust;
     bool wasThrusting;
 
@@ -21,8 +23,6 @@ public class PlayerBehaviour : Wrappable
         thruster.SetActive(false);
         rb = GetComponent<Rigidbody2D>();
         renderers = GetComponents<Renderer>();
-        //camera = GetComponent<Camera>();
-
     }
 
     private void Move()
@@ -74,6 +74,8 @@ public class PlayerBehaviour : Wrappable
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.name);
+        if (collision.GetComponent<MissileController>() != null) return;
+
+        PlayerHit?.Invoke();
     }
 }

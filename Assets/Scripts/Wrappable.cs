@@ -6,5 +6,4 @@ public class Wrappable : MonoBehaviour
 {
     public bool isWrappingX = false;
     public bool isWrappingY = false;
-    //public Camera camera;
 }

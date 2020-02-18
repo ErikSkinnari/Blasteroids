@@ -5,23 +5,25 @@ using UnityEngine;
 public class Asteroid : Wrappable
 {
     public Rigidbody2D rb;
-    public GameObject AsteroidSmallPrefab;
-    public GameObject Explosion;
-    readonly float velocityValue = 30f;
+    public GameObject AsteroidSmallPrefab, Explosion;
+    internal float rotation;
+    internal float rotationSpeed = 10f;
+    internal float velocityValue = 30f;
 
     private void Start()
     {
         rb = this.GetComponent<Rigidbody2D>();
+        rotation = Random.Range(-rotationSpeed, rotationSpeed);
         rb.AddRelativeForce(new Vector2(Random.Range(-velocityValue, velocityValue), Random.Range(-velocityValue, velocityValue)));
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+        transform.Rotate(0, 0, rotation * Time.deltaTime, Space.Self);
         transform.position = WrappingBehaviour.WrappingUpdate(this);
     }
 
-    public void Blast()
+    public virtual void Blast()
     {
         int randomNumber = Random.Range(1, 5);
         for (int i = 0; i < randomNumber; i++)
@@ -29,12 +31,11 @@ public class Asteroid : Wrappable
             Instantiate(AsteroidSmallPrefab, gameObject.transform.position, gameObject.transform.rotation);            
         }
 
+        FindObjectOfType<AudioManager>().Play("hit");
+
         var explosionAnimation = Instantiate(Explosion, gameObject.transform.position, gameObject.transform.rotation);
-        ParticleSystem particles = explosionAnimation.GetComponent<ParticleSystem>();
-        float explosionDuration = particles.duration + particles.startLifetime;
-        Destroy(explosionAnimation, explosionDuration);
-        //Instantiate(Explosion, gameObject.transform.position, gameObject.transform.rotation);
-        
+        Destroy(explosionAnimation, explosionAnimation.GetComponent<ParticleSystem>().main.duration);
+
         Destroy(gameObject);
     }
 }
