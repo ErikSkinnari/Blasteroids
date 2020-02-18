@@ -63,19 +63,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\GameHandler.cs" />
     <Compile Include="Assets\Scripts\Asteroid.cs" />
     <Compile Include="Assets\Scripts\AsteroidSmall.cs" />
     <Compile Include="Assets\Scripts\AsteroidSpawner.cs" />
+    <Compile Include="Assets\Scripts\AudioManager.cs" />
+    <Compile Include="Assets\Scripts\GameHandler.cs" />
     <Compile Include="Assets\Scripts\Gun.cs" />
     <Compile Include="Assets\Scripts\MissileController.cs" />
     <Compile Include="Assets\Scripts\PlayerBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Sound.cs" />
     <Compile Include="Assets\Scripts\Wrappable.cs" />
     <Compile Include="Assets\Scripts\WrappingBehaviour.cs" />
     <None Include="Assets\2D Space Kit\Backgrounds\Background Tip.txt" />
     <None Include="Assets\2D Space Kit\Readme.txt" />
     <None Include="Assets\2D Space Kit\Background Elements\Planets\Planet Masks\Note.txt" />
-    <None Include="Assets\2D Space Kit\Background Elements\Stars\Recolor Us!.txt" />
+    <None Include="Assets\2D Space Kit\Background Elements\Planets\Stars\Recolor Us!.txt" />
     <None Include="Assets\2D Space Kit\Particles (Sprites)\Note on Flares.txt" />
     <None Include="Assets\2D Space Kit\Backgrounds\Fantasy Purple 2048\Note.txt" />
     <None Include="Assets\2D Space Kit\Ships and Stations\Rendering Tip.txt" />

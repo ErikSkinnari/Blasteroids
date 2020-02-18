@@ -3,6 +3,7 @@
 public class PlayerBehaviour : Wrappable
 {
     private float thrust;
+    bool wasThrusting;
 
     public float rotationSpeed;
 
@@ -14,6 +15,7 @@ public class PlayerBehaviour : Wrappable
     private void Update() => Move();
     void Start()
     {
+        wasThrusting = false;
         thrust = 50f;
         rotationSpeed = 400f;
         thruster.SetActive(false);
@@ -35,6 +37,12 @@ public class PlayerBehaviour : Wrappable
         {
             thruster.SetActive(true);
 
+            if(wasThrusting == false)
+            {
+                wasThrusting = true;
+                FindObjectOfType<AudioManager>().Play("thruster");
+            }
+
             // Set acceleration to thrust * deltaTime IF player presses up.
 
             acceleration.y = thrustInput * thrust * Time.deltaTime;
@@ -43,6 +51,12 @@ public class PlayerBehaviour : Wrappable
         else
         {
             thruster.SetActive(false);
+
+            if (wasThrusting == true)
+            {
+                wasThrusting = false;
+                FindObjectOfType<AudioManager>().Stop("thruster");
+            }
         }
 
         // Add the acceleration to the ship
