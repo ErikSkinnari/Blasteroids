@@ -6,10 +6,14 @@ public class AsteroidSpawner : MonoBehaviour
 {
     public GameObject _asteroidPrefab;
     public GameObject _smallAsteroidPrefab;
+    int numberOfAsteroids;
 
     public void SpawnAsteroids(int level)
     {
-        for (int i = 0; i < level * 2 + 5; i++)
+        numberOfAsteroids = level * 2 + 5;
+        numberOfAsteroids = level; // TODO Remove row.s
+        Debug.Log("Spawn Asteroids. Level #:" + level);
+        for (int i = 0; i < numberOfAsteroids; i++)
         {
             Vector2 randomPositionOnScreen = Camera.main.ViewportToWorldPoint(new Vector2(Random.value, Random.value));
             Instantiate(_asteroidPrefab, randomPositionOnScreen, Quaternion.identity);

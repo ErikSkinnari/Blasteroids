@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DestroySelf : MonoBehaviour
 {
-    float offset = 30f;
+    float offset = 50f;
 
     void Update()
     {

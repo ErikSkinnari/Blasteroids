@@ -13,7 +13,7 @@ public class GameHandler : MonoBehaviour
     public Text asteroidCounter, timeCounter, gameOver, levelComplete;
     public float playTimeCounter;
     public string playerName;
-    private bool levelCleared, gameEnded;
+    private bool levelCleared, gameEnded, levelTransition;
 
     private void OnEnable()
     {
@@ -31,6 +31,7 @@ public class GameHandler : MonoBehaviour
         _levelNumber = 0;
         timeCounter.text = playTimeCounter.ToString("F2");
         Player = Instantiate(Player, new Vector3(0, 0, 0), Quaternion.identity);
+        Debug.Log("sTARTUP METHOD");
         SetupLevel();
         Debug.Log("Game setup");
     }
@@ -42,26 +43,35 @@ public class GameHandler : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Asteroid a = (Asteroid)FindObjectOfType(typeof(Asteroid));
-        if (a)
-        {
-            Debug.Log("Asteroid object found: " + a.name);
-        }
-        else
-        {
-            levelCleared = true;
-            Debug.Log("No Asteroid object could be found");
-        }
-
         if (!gameEnded && !levelCleared)
         {
+            Asteroid a = (Asteroid)FindObjectOfType(typeof(Asteroid));
+            if (a)
+            {
+                Debug.Log("Asteroid object found: " + a.name);
+            }
+            else
+            {
+                levelCleared = true;
+                levelTransition = true;
+                Debug.Log("No Asteroid object could be found");
+            }
             playTimeCounter += Time.deltaTime;
             TimerUpdate();
         }
 
         if(levelCleared)
         {
-            LevelComplete();
+            if(levelTransition)
+            {
+                levelTransition = false;
+                LevelComplete();
+            }
+        }
+
+        if(gameEnded)
+        {
+            GameOver();
         }
     }
 
@@ -76,7 +86,18 @@ public class GameHandler : MonoBehaviour
     {
         levelComplete.text = "Level " + _levelNumber + " Complete!";
         levelComplete.enabled = true;
-        yield return new WaitForSeconds(5f);
+
+        float counter = 0;
+
+        float waitTime = 4;
+        while (counter < waitTime)
+        {
+            Debug.Log("Waiting! " + counter);
+            counter += Time.deltaTime;
+
+            yield return null;
+        }
+
         levelComplete.enabled = false;
         SetupLevel();
     }
@@ -96,16 +117,19 @@ public class GameHandler : MonoBehaviour
     // Increase level number and give player one more life(max 3), spawn asteroids andflag level as not cleared.
     private void SetupLevel()
     {
+        Debug.Log("SetupLevel method");
+        Debug.Break();
+        levelCleared = false;
         _levelNumber++;
 
         if (_playerLives < 3) 
         {
             _playerLives++;
         }
-
+        Debug.Log("About to spawn asteroids...");
+        Debug.Break();
         spawner.GetComponent<AsteroidSpawner>().SpawnAsteroids(_levelNumber);
         EnablePlayerControls();
-        levelCleared = false;
     }
 
     // Player got hit my an asteroid
@@ -116,7 +140,7 @@ public class GameHandler : MonoBehaviour
         UpdateHealthBar();
         if(_playerLives <= 0)
         {
-            GameOver();
+            gameEnded = true;
         }
     }
 
@@ -138,22 +162,27 @@ public class GameHandler : MonoBehaviour
         asteroidCounter.text = _asteroidShot.ToString();
     }
 
-
     private void GameOver()
-    {
+    {        
         DisablePlayerControls();
         StartCoroutine(GameOverReset());
     }
 
     IEnumerator GameOverReset()
     {
+
+        gameOver.enabled = true;
+
         yield return new WaitForSeconds(5f);
 
+        float totalScore = _asteroidShot / playTimeCounter;
         // TODO setup API POST with score.
 
+        gameOver.enabled = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    // Updates visibility and color of the health indicator on top right.
     private void UpdateHealthBar()
     {
         switch (_playerLives)
