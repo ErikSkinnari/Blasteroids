@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class GameHandler : MonoBehaviour
 {
     public int _playerLives, _asteroidShot, _levelNumber;
-    public GameObject Player, live1, live2, live3, AsteroidPrefab, AsteroidPrefabSmall;
-    public GameObject spawner;
+    public GameObject Player, live1, live2, live3, AsteroidPrefab, AsteroidPrefabSmall, spawner;
+    private GameObject _player;
     public Text asteroidCounter, timeCounter, gameOver, finalScore, levelComplete;
     public float playTimeCounter;
     float totalScore;
@@ -28,9 +28,10 @@ public class GameHandler : MonoBehaviour
         _levelNumber = 0;
         timeCounter.text = playTimeCounter.ToString("F2");
         asteroidCounter.text = _asteroidShot.ToString();
-        Player = Instantiate(Player, new Vector3(0, 0, 0), Quaternion.identity);
+        _player = Instantiate(Player, new Vector3(0, 0, 0), Quaternion.identity);
 
         SetupLevel();
+        _player.GetComponent<PlayerBehaviour>().MakeVisible();
 
     }
 
@@ -71,12 +72,14 @@ public class GameHandler : MonoBehaviour
     // Disable controls, show message and then start next level
     void LevelComplete()
     {
+        
         DisablePlayerControls();
         StartCoroutine(CompleteMessage());             
     }
 
     IEnumerator CompleteMessage()
     {
+        _player.GetComponent<PlayerBehaviour>().Dissolve();
         levelComplete.text = "Level " + _levelNumber + " Complete!";
         levelComplete.gameObject.SetActive(true);
 
@@ -92,18 +95,19 @@ public class GameHandler : MonoBehaviour
 
         levelComplete.gameObject.SetActive(false);
         SetupLevel();
+        _player.GetComponent<PlayerBehaviour>().MakeVisible();
     }
 
 
     // Enable and disable playercontrolls. Used between levels and on GameOver.
     private void EnablePlayerControls()
     {
-        Player.GetComponent<PlayerBehaviour>().enabled = true;
+        _player.GetComponent<PlayerBehaviour>().enabled = true;
     }
     
     private void DisablePlayerControls()
     {
-        Player.GetComponent<PlayerBehaviour>().enabled = false;
+        _player.GetComponent<PlayerBehaviour>().enabled = false;
     }    
 
     // Increase level number and give player one more life(max 3), spawn asteroids andflag level as not cleared.
@@ -112,8 +116,8 @@ public class GameHandler : MonoBehaviour
         levelCleared = false;
         _levelNumber++;
 
-        // Give player one extra life every second level
-        if (_playerLives < 3 && (_levelNumber % 2 == 0))
+        // Give player one extra life every fourth level
+        if (_playerLives < 3 && (_levelNumber % 4 == 0))
         {
             _playerLives++;
             UpdateHealthBar();
@@ -166,10 +170,11 @@ public class GameHandler : MonoBehaviour
             }
         }
 
+        _player.GetComponent<PlayerBehaviour>().Dissolve();
         DisablePlayerControls();
 
-        totalScore = _asteroidShot / playTimeCounter;
-        finalScore.text = "Your final score is: " + totalScore.ToString();
+        totalScore = _asteroidShot / playTimeCounter * 100;
+        finalScore.text = "Your final score is: " + totalScore.ToString("F2");
         StartCoroutine(GameOverReset());
     }
 
@@ -202,6 +207,7 @@ public class GameHandler : MonoBehaviour
         levelTransition = false;
         SetupLevel();
         UpdateHealthBar();
+        UpdateScores();
     }
 
     // Updates visibility and color of the health indicator on top right.

@@ -4,9 +4,10 @@ public class PlayerBehaviour : Wrappable
 {
     public delegate void PlayerDamage();
     public static event PlayerDamage PlayerHit;
-    private float thrust;
-    bool wasThrusting;
+    private float _thrust, _fade;
+    private bool _wasThrusting, _isDissolving, _isBecomingVisible, _isInvisible;
     public Transform barrelPoint;
+    Material _material;
 
     public float rotationSpeed;
 
@@ -14,23 +15,57 @@ public class PlayerBehaviour : Wrappable
 
     public Rigidbody2D rb;
     Renderer[] renderers;
-
-    private void Update()
-    {
-        Move();
-        if (Input.GetButtonDown("Fire1"))
-        {
-            Fire();
-        }
-    }
+    
     void Start()
     {
-        wasThrusting = false;
-        thrust = 50f;
+        _fade = 0f;
+        _isBecomingVisible = true;
+        _isInvisible = false;
+        _wasThrusting = false;
+        _thrust = 50f;
         rotationSpeed = 400f;
         thruster.SetActive(false);
         rb = GetComponent<Rigidbody2D>();
         renderers = GetComponents<Renderer>();
+        _material = GetComponent<SpriteRenderer>().material;
+    }
+
+    private void Update()
+    {
+        if (_isDissolving)
+        {
+            Debug.Log("Desolving");
+            _fade -= Time.deltaTime;
+
+            if (_fade <= 0f)
+            {
+                _fade = 0f;
+                _isDissolving = false;
+                Debug.Log("NOT visible");
+            }
+        }
+
+        if (_isBecomingVisible)
+        {
+            Debug.Log("Becoming visible.");
+            _fade += Time.deltaTime;
+
+            if (_fade >= 1f)
+            {
+                _fade = 1f;
+                _isBecomingVisible = false;
+                Debug.Log("FULLY visible");
+            }
+        }
+
+        _material.SetFloat("_fade", _fade);
+
+        Move();
+        if (Input.GetButtonDown("Fire1") || Input.GetKeyDown("space"))
+        {
+            Fire();
+        }
+
     }
 
     void Fire()
@@ -40,7 +75,6 @@ public class PlayerBehaviour : Wrappable
 
     private void Move()
     {
-
         var rotationInput = Input.GetAxis("Horizontal");
         var thrustInput = Input.GetAxis("Vertical");
 
@@ -50,21 +84,21 @@ public class PlayerBehaviour : Wrappable
         {
             thruster.SetActive(true);
 
-            if(wasThrusting == false)
+            if(_wasThrusting == false)
             {
-                wasThrusting = true;
+                _wasThrusting = true;
                 FindObjectOfType<AudioManager>().Play("thruster");
             }
 
-            acceleration.y = thrustInput * thrust * Time.deltaTime;
+            acceleration.y = thrustInput * _thrust * Time.deltaTime;
         }
         else
         {
             thruster.SetActive(false);
 
-            if (wasThrusting == true)
+            if (_wasThrusting == true)
             {
-                wasThrusting = false;
+                _wasThrusting = false;
                 FindObjectOfType<AudioManager>().Stop("thruster");
             }
         }
@@ -80,6 +114,16 @@ public class PlayerBehaviour : Wrappable
 
         transform.position = WrappingBehaviour.WrappingUpdate(this);
         //ScreenWrap();
+    }
+
+    public void Dissolve()
+    {
+        if (!_isDissolving) _isDissolving = true;
+    }
+
+    public void MakeVisible()
+    {
+        if (!_isBecomingVisible) _isBecomingVisible = true;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
