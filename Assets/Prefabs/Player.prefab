@@ -4798,7 +4798,6 @@ GameObject:
   - component: {fileID: 2164408824384486531}
   - component: {fileID: 2164408824384486530}
   - component: {fileID: 2164408824384486529}
-  - component: {fileID: 2164408824384486557}
   - component: {fileID: 2164408824384486558}
   m_Layer: 0
   m_Name: Player
@@ -4815,7 +4814,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2164408824384486528}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.026, z: 0}
+  m_LocalPosition: {x: -0.013, y: 0.046, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children:
   - {fileID: 2164408823860032913}
@@ -4908,24 +4907,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isWrappingX: 0
   isWrappingY: 0
+  barrelPoint: {fileID: 2164408825582499626}
   rotationSpeed: 0
   thruster: {fileID: 2164408823860032912}
-  rb: {fileID: 2164408824384486530}
---- !u!114 &2164408824384486557
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2164408824384486528}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c62619ddc4ea0e44291f10e82f18275a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  barrelPoint: {fileID: 2164408825582499626}
   MissilePrefab: {fileID: 4858928304381083544, guid: 221b4373508706e44833a5f7ed7959d8,
     type: 3}
+  rb: {fileID: 2164408824384486530}
 --- !u!61 &2164408824384486558
 BoxCollider2D:
   m_ObjectHideFlags: 0

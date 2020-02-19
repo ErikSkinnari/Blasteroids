@@ -6,15 +6,23 @@ public class PlayerBehaviour : Wrappable
     public static event PlayerDamage PlayerHit;
     private float thrust;
     bool wasThrusting;
+    public Transform barrelPoint;
 
     public float rotationSpeed;
 
-    public GameObject thruster;
+    public GameObject thruster, MissilePrefab;
 
     public Rigidbody2D rb;
     Renderer[] renderers;
 
-    private void Update() => Move();
+    private void Update()
+    {
+        Move();
+        if (Input.GetButtonDown("Fire1"))
+        {
+            Fire();
+        }
+    }
     void Start()
     {
         wasThrusting = false;
@@ -23,6 +31,11 @@ public class PlayerBehaviour : Wrappable
         thruster.SetActive(false);
         rb = GetComponent<Rigidbody2D>();
         renderers = GetComponents<Renderer>();
+    }
+
+    void Fire()
+    {
+        Instantiate(MissilePrefab, barrelPoint.position, barrelPoint.rotation);
     }
 
     private void Move()
@@ -43,10 +56,7 @@ public class PlayerBehaviour : Wrappable
                 FindObjectOfType<AudioManager>().Play("thruster");
             }
 
-            // Set acceleration to thrust * deltaTime IF player presses up.
-
             acceleration.y = thrustInput * thrust * Time.deltaTime;
-            
         }
         else
         {

@@ -19,7 +19,6 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        Play("ambient");
     }
 
     public void Play(string name)

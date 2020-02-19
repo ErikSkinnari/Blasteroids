@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameHandler : MonoBehaviour
@@ -10,35 +8,30 @@ public class GameHandler : MonoBehaviour
     public int _playerLives, _asteroidShot, _levelNumber;
     public GameObject Player, live1, live2, live3, AsteroidPrefab, AsteroidPrefabSmall;
     public GameObject spawner;
-    public Text asteroidCounter, timeCounter, gameOver, levelComplete;
+    public Text asteroidCounter, timeCounter, gameOver, finalScore, levelComplete;
     public float playTimeCounter;
+    float totalScore;
     public string playerName;
-    private bool levelCleared, gameEnded, levelTransition;
+    private bool levelCleared, gameEnded, levelTransition, gameReset;
 
-    private void OnEnable()
+
+    void Start()
     {
         gameOver.gameObject.SetActive(false);
         levelComplete.gameObject.SetActive(false);
         PlayerBehaviour.PlayerHit += PlayerDamage;
         MissileController.AsteroidHit += AsteroidHit;
-    }
 
-    void Start()
-    {
         playTimeCounter = 0;
         _asteroidShot = 0;
         _playerLives = 3;
         _levelNumber = 0;
         timeCounter.text = playTimeCounter.ToString("F2");
+        asteroidCounter.text = _asteroidShot.ToString();
         Player = Instantiate(Player, new Vector3(0, 0, 0), Quaternion.identity);
-        Debug.Log("sTARTUP METHOD");
-        SetupLevel();
-        Debug.Log("Game setup");
-    }
 
-    void Update()
-    {
-        
+        SetupLevel();
+
     }
 
     private void FixedUpdate()
@@ -46,16 +39,12 @@ public class GameHandler : MonoBehaviour
         if (!gameEnded && !levelCleared)
         {
             Asteroid a = (Asteroid)FindObjectOfType(typeof(Asteroid));
-            if (a)
-            {
-                Debug.Log("Asteroid object found: " + a.name);
-            }
-            else
+            if (a == null)
             {
                 levelCleared = true;
                 levelTransition = true;
-                Debug.Log("No Asteroid object could be found");
             }
+
             playTimeCounter += Time.deltaTime;
             TimerUpdate();
         }
@@ -71,7 +60,11 @@ public class GameHandler : MonoBehaviour
 
         if(gameEnded)
         {
-            GameOver();
+            if(gameReset)
+            {
+                gameReset = false;
+                GameOver();
+            }
         }
     }
 
@@ -85,20 +78,19 @@ public class GameHandler : MonoBehaviour
     IEnumerator CompleteMessage()
     {
         levelComplete.text = "Level " + _levelNumber + " Complete!";
-        levelComplete.enabled = true;
+        levelComplete.gameObject.SetActive(true);
 
         float counter = 0;
 
         float waitTime = 4;
         while (counter < waitTime)
         {
-            Debug.Log("Waiting! " + counter);
             counter += Time.deltaTime;
 
             yield return null;
         }
 
-        levelComplete.enabled = false;
+        levelComplete.gameObject.SetActive(false);
         SetupLevel();
     }
 
@@ -117,17 +109,16 @@ public class GameHandler : MonoBehaviour
     // Increase level number and give player one more life(max 3), spawn asteroids andflag level as not cleared.
     private void SetupLevel()
     {
-        Debug.Log("SetupLevel method");
-        Debug.Break();
         levelCleared = false;
         _levelNumber++;
 
-        if (_playerLives < 3) 
+        // Give player one extra life every second level
+        if (_playerLives < 3 && (_levelNumber % 2 == 0))
         {
             _playerLives++;
+            UpdateHealthBar();
         }
-        Debug.Log("About to spawn asteroids...");
-        Debug.Break();
+
         spawner.GetComponent<AsteroidSpawner>().SpawnAsteroids(_levelNumber);
         EnablePlayerControls();
     }
@@ -141,6 +132,7 @@ public class GameHandler : MonoBehaviour
         if(_playerLives <= 0)
         {
             gameEnded = true;
+            gameReset = true;
         }
     }
 
@@ -163,23 +155,53 @@ public class GameHandler : MonoBehaviour
     }
 
     private void GameOver()
-    {        
+    {
+        Asteroid[] remainingAsteroids = FindObjectsOfType<Asteroid>();
+        Debug.Log(remainingAsteroids.Length + " remaining asteroids");
+        if(remainingAsteroids != null)
+        {
+            foreach(Asteroid a in remainingAsteroids)
+            {
+                Destroy(a.gameObject);
+            }
+        }
+
         DisablePlayerControls();
+
+        totalScore = _asteroidShot / playTimeCounter;
+        finalScore.text = "Your final score is: " + totalScore.ToString();
         StartCoroutine(GameOverReset());
     }
 
     IEnumerator GameOverReset()
     {
 
-        gameOver.enabled = true;
+        gameOver.gameObject.SetActive(true);
+        finalScore.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(5f);
 
-        float totalScore = _asteroidShot / playTimeCounter;
+        
         // TODO setup API POST with score.
 
-        gameOver.enabled = false;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        gameOver.gameObject.SetActive(false);
+        finalScore.gameObject.SetActive(false);
+
+        ResetGame();
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void ResetGame()
+    {
+        _asteroidShot = 0;
+        playTimeCounter = 0;
+        _levelNumber = 0;
+        _playerLives = 3;
+        gameEnded = false;
+        levelCleared = false;
+        levelTransition = false;
+        SetupLevel();
+        UpdateHealthBar();
     }
 
     // Updates visibility and color of the health indicator on top right.
@@ -188,6 +210,9 @@ public class GameHandler : MonoBehaviour
         switch (_playerLives)
         {
             case 3:
+                live1.GetComponent<SpriteRenderer>().color = Color.white;
+                live2.GetComponent<SpriteRenderer>().color = Color.white;
+                live3.GetComponent<SpriteRenderer>().color = Color.white;
                 live1.gameObject.SetActive(true);
                 live2.gameObject.SetActive(true);
                 live3.gameObject.SetActive(true);
