@@ -11,7 +11,6 @@ public class AsteroidSpawner : MonoBehaviour
     public void SpawnAsteroids(int level)
     {
         numberOfAsteroids = level * 2 + 5;
-        numberOfAsteroids = level; // TODO Remove row.s
         Debug.Log("Spawn Asteroids. Level #:" + level);
         for (int i = 0; i < numberOfAsteroids; i++)
         {

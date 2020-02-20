@@ -1,11 +1,15 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class PlayerBehaviour : Wrappable
 {
     public delegate void PlayerDamage();
+    public delegate void MissileFire();
     public static event PlayerDamage PlayerHit;
+    public static event MissileFire MissileFired;
+
     private float _thrust, _fade;
-    private bool _wasThrusting, _isDissolving, _isBecomingVisible, _isInvisible;
+    private bool _wasThrusting, _isDissolving, _isBecomingVisible, _isMovable, _isDamageable;
     public Transform barrelPoint;
     Material _material;
 
@@ -20,7 +24,6 @@ public class PlayerBehaviour : Wrappable
     {
         _fade = 0f;
         _isBecomingVisible = true;
-        _isInvisible = false;
         _wasThrusting = false;
         _thrust = 50f;
         rotationSpeed = 400f;
@@ -34,27 +37,26 @@ public class PlayerBehaviour : Wrappable
     {
         if (_isDissolving)
         {
-            Debug.Log("Desolving");
+            _isDamageable = false;
             _fade -= Time.deltaTime;
 
             if (_fade <= 0f)
             {
                 _fade = 0f;
                 _isDissolving = false;
-                Debug.Log("NOT visible");
             }
         }
 
         if (_isBecomingVisible)
         {
             Debug.Log("Becoming visible.");
-            _fade += Time.deltaTime;
+            _fade += Time.deltaTime / 2;
 
             if (_fade >= 1f)
             {
                 _fade = 1f;
                 _isBecomingVisible = false;
-                Debug.Log("FULLY visible");
+                StartCoroutine(DamageImunity());
             }
         }
 
@@ -68,15 +70,29 @@ public class PlayerBehaviour : Wrappable
 
     }
 
+    IEnumerator DamageImunity()
+    {
+        _isDamageable = false;
+        yield return new WaitForSeconds(3f);
+        _isDamageable = true;
+    }
+
     void Fire()
     {
         Instantiate(MissilePrefab, barrelPoint.position, barrelPoint.rotation);
+        MissileFired?.Invoke();
     }
 
     private void Move()
     {
-        var rotationInput = Input.GetAxis("Horizontal");
-        var thrustInput = Input.GetAxis("Vertical");
+        float rotationInput = 0f;
+        float thrustInput = 0f;
+
+        if (_isMovable)
+        {
+            rotationInput = Input.GetAxis("Horizontal");
+            thrustInput = Input.GetAxis("Vertical");
+        }
 
         var acceleration = new Vector2();
 
@@ -116,6 +132,11 @@ public class PlayerBehaviour : Wrappable
         //ScreenWrap();
     }
 
+    public void MovementEnabled(bool enable)
+    {
+        _isMovable = enable;
+    }
+
     public void Dissolve()
     {
         if (!_isDissolving) _isDissolving = true;
@@ -128,8 +149,12 @@ public class PlayerBehaviour : Wrappable
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // Ignore missile collisions
         if (collision.GetComponent<MissileController>() != null) return;
 
-        PlayerHit?.Invoke();
+        if (_isDamageable)
+        {
+            PlayerHit?.Invoke();
+        }
     }
 }

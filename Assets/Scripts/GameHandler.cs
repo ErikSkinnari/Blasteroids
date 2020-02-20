@@ -5,29 +5,50 @@ using UnityEngine.UI;
 
 public class GameHandler : MonoBehaviour
 {
-    public int _playerLives, _asteroidShot, _levelNumber;
+    private int playerLives, asteroidShot, levelNumber, missileCount;
     public GameObject Player, live1, live2, live3, AsteroidPrefab, AsteroidPrefabSmall, spawner;
+    private HighscoreHandler ScoreHandler;
     private GameObject _player;
     public Text asteroidCounter, timeCounter, gameOver, finalScore, levelComplete;
     public float playTimeCounter;
-    float totalScore;
+    float totalScore, skillLevel;
     public string playerName;
     private bool levelCleared, gameEnded, levelTransition, gameReset;
+
+    void Awake()
+    {
+
+        ScoreHandler = gameObject.AddComponent<HighscoreHandler>();
+
+        // Some dummy high scores.
+        Highscore a = new Highscore("Housepainter", 50.2f, 20, 100, 2, 3f);
+        ScoreHandler.SendHighscore(a);
+        Highscore b = new Highscore("Housepainter", 13.1f, 10, 30, 3, 12.1f);
+        ScoreHandler.SendHighscore(b);
+        Highscore c = new Highscore("Housepainter", 12.5f, 15, 60, 1, 1.1f);
+        ScoreHandler.SendHighscore(c);
+        Highscore d = new Highscore("Housepainter", 89.2f, 65, 87, 9, 102.4f);
+        ScoreHandler.SendHighscore(d);
+    }
 
 
     void Start()
     {
+        
         gameOver.gameObject.SetActive(false);
         levelComplete.gameObject.SetActive(false);
         PlayerBehaviour.PlayerHit += PlayerDamage;
+        PlayerBehaviour.MissileFired += MissileCounter;
         MissileController.AsteroidHit += AsteroidHit;
 
+
         playTimeCounter = 0;
-        _asteroidShot = 0;
-        _playerLives = 3;
-        _levelNumber = 0;
+        missileCount = 0;
+        asteroidShot = 0;
+        playerLives = 3;
+        levelNumber = 0;
         timeCounter.text = playTimeCounter.ToString("F2");
-        asteroidCounter.text = _asteroidShot.ToString();
+        asteroidCounter.text = asteroidShot.ToString();
         _player = Instantiate(Player, new Vector3(0, 0, 0), Quaternion.identity);
 
         SetupLevel();
@@ -46,7 +67,7 @@ public class GameHandler : MonoBehaviour
                 levelTransition = true;
             }
 
-            playTimeCounter += Time.deltaTime;
+            playTimeCounter += Time.fixedDeltaTime;
             TimerUpdate();
         }
 
@@ -72,15 +93,17 @@ public class GameHandler : MonoBehaviour
     // Disable controls, show message and then start next level
     void LevelComplete()
     {
-        
+        _player.GetComponent<PlayerBehaviour>().Dissolve();
+        Debug.Log("LevelComplete");
         DisablePlayerControls();
         StartCoroutine(CompleteMessage());             
     }
 
     IEnumerator CompleteMessage()
     {
-        _player.GetComponent<PlayerBehaviour>().Dissolve();
-        levelComplete.text = "Level " + _levelNumber + " Complete!";
+        Debug.Log("CompleteMessage");
+        
+        levelComplete.text = "Level " + levelNumber + " Complete!";
         levelComplete.gameObject.SetActive(true);
 
         float counter = 0;
@@ -95,45 +118,47 @@ public class GameHandler : MonoBehaviour
 
         levelComplete.gameObject.SetActive(false);
         SetupLevel();
-        _player.GetComponent<PlayerBehaviour>().MakeVisible();
+        
     }
-
 
     // Enable and disable playercontrolls. Used between levels and on GameOver.
     private void EnablePlayerControls()
     {
-        _player.GetComponent<PlayerBehaviour>().enabled = true;
+        _player.GetComponent<PlayerBehaviour>().MovementEnabled(true);
     }
     
     private void DisablePlayerControls()
     {
-        _player.GetComponent<PlayerBehaviour>().enabled = false;
+        _player.GetComponent<PlayerBehaviour>().MovementEnabled(false);
     }    
 
     // Increase level number and give player one more life(max 3), spawn asteroids andflag level as not cleared.
     private void SetupLevel()
     {
+        Debug.Log("SetupLevel");
         levelCleared = false;
-        _levelNumber++;
+        levelNumber++;
+
+        _player.GetComponent<PlayerBehaviour>().MakeVisible();
 
         // Give player one extra life every fourth level
-        if (_playerLives < 3 && (_levelNumber % 4 == 0))
+        if (playerLives < 3 && (levelNumber % 4 == 0))
         {
-            _playerLives++;
+            playerLives++;
             UpdateHealthBar();
         }
 
-        spawner.GetComponent<AsteroidSpawner>().SpawnAsteroids(_levelNumber);
+        spawner.GetComponent<AsteroidSpawner>().SpawnAsteroids(levelNumber);
         EnablePlayerControls();
     }
 
     // Player got hit my an asteroid
     void PlayerDamage()
     {
-        _playerLives--;
+        playerLives--;
         FindObjectOfType<AudioManager>().Play("damage");
         UpdateHealthBar();
-        if(_playerLives <= 0)
+        if(playerLives <= 0)
         {
             gameEnded = true;
             gameReset = true;
@@ -143,8 +168,13 @@ public class GameHandler : MonoBehaviour
     // Update when Player his an asteroid
     void AsteroidHit()
     {
-        _asteroidShot++;
+        asteroidShot++;
         UpdateScores();
+    }
+
+    void MissileCounter()
+    {
+        missileCount++;
     }
 
     // Update timer value on UI
@@ -155,7 +185,7 @@ public class GameHandler : MonoBehaviour
     // Update the score value on UI
     private void UpdateScores()
     {
-        asteroidCounter.text = _asteroidShot.ToString();
+        asteroidCounter.text = asteroidShot.ToString();
     }
 
     private void GameOver()
@@ -173,38 +203,41 @@ public class GameHandler : MonoBehaviour
         _player.GetComponent<PlayerBehaviour>().Dissolve();
         DisablePlayerControls();
 
-        totalScore = _asteroidShot / playTimeCounter * 100;
+        totalScore = asteroidShot / playTimeCounter * 100;
         finalScore.text = "Your final score is: " + totalScore.ToString("F2");
         StartCoroutine(GameOverReset());
     }
 
     IEnumerator GameOverReset()
     {
-
         gameOver.gameObject.SetActive(true);
         finalScore.gameObject.SetActive(true);
+        skillLevel = totalScore / missileCount;
+
+        Highscore h = new Highscore("Housepainter", totalScore, asteroidShot, missileCount, levelNumber, skillLevel);
+        ScoreHandler.SendHighscore(h);
 
         yield return new WaitForSeconds(5f);
-
-        
-        // TODO setup API POST with score.
 
         gameOver.gameObject.SetActive(false);
         finalScore.gameObject.SetActive(false);
 
         ResetGame();
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    // Reset everything and start game from begining.
     private void ResetGame()
     {
-        _asteroidShot = 0;
+        Debug.Log("ResetGame");
+        asteroidShot = 0;
         playTimeCounter = 0;
-        _levelNumber = 0;
-        _playerLives = 3;
+        levelNumber = 0;
+        playerLives = 3;
         gameEnded = false;
         levelCleared = false;
         levelTransition = false;
+        FindObjectOfType<AudioManager>().Stop("damage");
+        FindObjectOfType<AudioManager>().Stop("warning");
         SetupLevel();
         UpdateHealthBar();
         UpdateScores();
@@ -213,7 +246,7 @@ public class GameHandler : MonoBehaviour
     // Updates visibility and color of the health indicator on top right.
     private void UpdateHealthBar()
     {
-        switch (_playerLives)
+        switch (playerLives)
         {
             case 3:
                 live1.GetComponent<SpriteRenderer>().color = Color.white;
