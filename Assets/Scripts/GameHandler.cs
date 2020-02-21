@@ -34,7 +34,6 @@ public class GameHandler : MonoBehaviour
 
     void Start()
     {
-        
         gameOver.gameObject.SetActive(false);
         levelComplete.gameObject.SetActive(false);
         PlayerBehaviour.PlayerHit += PlayerDamage;
@@ -42,6 +41,7 @@ public class GameHandler : MonoBehaviour
         MissileController.AsteroidHit += AsteroidHit;
 
 
+        // TODO Check if ResetGame() is an option instead.
         playTimeCounter = 0;
         missileCount = 0;
         asteroidShot = 0;
@@ -52,7 +52,6 @@ public class GameHandler : MonoBehaviour
         _player = Instantiate(Player, new Vector3(0, 0, 0), Quaternion.identity);
 
         SetupLevel();
-        _player.GetComponent<PlayerBehaviour>().MakeVisible();
 
     }
 
@@ -139,6 +138,8 @@ public class GameHandler : MonoBehaviour
         levelCleared = false;
         levelNumber++;
 
+
+        _player.GetComponent<PlayerBehaviour>().ResetPosition();
         _player.GetComponent<PlayerBehaviour>().MakeVisible();
 
         // Give player one extra life every fourth level

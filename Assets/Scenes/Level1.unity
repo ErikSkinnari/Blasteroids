@@ -174,8 +174,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 787054969
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: c4f8a01fad80ab74f8e250b688d74a55, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -371,27 +371,27 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: warning
     clip: {fileID: 8300000, guid: e6922c01ad72c0540a90ee40464e8497, type: 3}
-    volume: 0.4
+    volume: 0.352
     pitch: 1.4
     source: {fileID: 0}
   - name: critical
     clip: {fileID: 8300000, guid: f97dbb3886723eb43b028f2013790062, type: 3}
-    volume: 0.6
+    volume: 0.495
     pitch: 1
     source: {fileID: 0}
   - name: shot
     clip: {fileID: 8300000, guid: ab448a955cd50154b89174f820bfb945, type: 3}
-    volume: 0.7
-    pitch: 1.72
+    volume: 0.09
+    pitch: 1.57
     source: {fileID: 0}
   - name: hit
     clip: {fileID: 8300000, guid: d88ddb0021b81be4291e770bfbd23745, type: 3}
-    volume: 0.7
+    volume: 0.357
     pitch: 0.5
     source: {fileID: 0}
   - name: damage
     clip: {fileID: 8300000, guid: e6f197f9ba9d2974da59aeff96a0f7a1, type: 3}
-    volume: 1
+    volume: 0.53
     pitch: 0.1
     source: {fileID: 0}
 --- !u!4 &227429733
@@ -604,6 +604,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420030}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -619,6 +620,37 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
+--- !u!114 &519420030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_CameraOutput: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -1109,8 +1141,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 787054969
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: c4f8a01fad80ab74f8e250b688d74a55, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1726,8 +1758,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 787054969
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: c4f8a01fad80ab74f8e250b688d74a55, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1797,9 +1829,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2ee3cf38653a52488770e87235b3e1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerLives: 0
-  _asteroidShot: 0
-  _levelNumber: 0
   Player: {fileID: 2164408824384486528, guid: 04466d4ab87cac0418b7b6ae3f29a91d, type: 3}
   live1: {fileID: 1906273074}
   live2: {fileID: 7096197}

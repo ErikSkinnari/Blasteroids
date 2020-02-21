@@ -70,6 +70,13 @@ public class PlayerBehaviour : Wrappable
 
     }
 
+    public void ResetPosition()
+    {
+        transform.position = new Vector3(0f,0f,0f);
+        transform.rotation = Quaternion.identity;
+        rb.velocity = new Vector2(0,0);
+    }
+
     IEnumerator DamageImunity()
     {
         _isDamageable = false;
