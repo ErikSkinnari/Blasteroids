@@ -13,6 +13,18 @@ public class HighscoreHandler : MonoBehaviour
         StartCoroutine(Upload(highscore));
     }
 
+    public void AddDummyScores()
+    {
+        Highscore a = new Highscore("Housepainter", 50.2f, 20, 100, 2, 3f);
+        SendHighscore(a);
+        Highscore b = new Highscore("Housepainter", 13.1f, 10, 30, 3, 12.1f);
+        SendHighscore(b);
+        Highscore c = new Highscore("Housepainter", 12.5f, 15, 60, 1, 1.1f);
+        SendHighscore(c);
+        Highscore d = new Highscore("Housepainter", 89.2f, 65, 87, 9, 102.4f);
+        SendHighscore(d);
+    }
+
     IEnumerator Upload(Highscore highscore)
     {
         var postData = JsonUtility.ToJson(highscore);

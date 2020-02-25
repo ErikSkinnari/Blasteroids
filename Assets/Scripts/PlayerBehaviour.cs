@@ -11,14 +11,14 @@ public class PlayerBehaviour : Wrappable
     private float _thrust, _fade;
     private bool _wasThrusting, _isDissolving, _isBecomingVisible, _isMovable, _isDamageable;
     public Transform barrelPoint;
-    Material _material;
+    public Material dissolveMaterial, shieldMaterial;
+    public Renderer renderer;
 
     public float rotationSpeed;
 
     public GameObject thruster, MissilePrefab;
 
     public Rigidbody2D rb;
-    Renderer[] renderers;
     
     void Start()
     {
@@ -29,8 +29,6 @@ public class PlayerBehaviour : Wrappable
         rotationSpeed = 400f;
         thruster.SetActive(false);
         rb = GetComponent<Rigidbody2D>();
-        renderers = GetComponents<Renderer>();
-        _material = GetComponent<SpriteRenderer>().material;
     }
 
     private void Update()
@@ -60,7 +58,7 @@ public class PlayerBehaviour : Wrappable
             }
         }
 
-        _material.SetFloat("_fade", _fade);
+        dissolveMaterial.SetFloat("_fade", _fade);
 
         Move();
         if (Input.GetButtonDown("Fire1") || Input.GetKeyDown("space"))
@@ -80,14 +78,19 @@ public class PlayerBehaviour : Wrappable
     IEnumerator DamageImunity()
     {
         _isDamageable = false;
+        renderer.material = shieldMaterial;
         yield return new WaitForSeconds(3f);
         _isDamageable = true;
+        renderer.material = dissolveMaterial;
     }
 
     void Fire()
     {
-        Instantiate(MissilePrefab, barrelPoint.position, barrelPoint.rotation);
-        MissileFired?.Invoke();
+        if (_isMovable)
+        {
+            Instantiate(MissilePrefab, barrelPoint.position, barrelPoint.rotation);
+            MissileFired?.Invoke();
+        }
     }
 
     private void Move()

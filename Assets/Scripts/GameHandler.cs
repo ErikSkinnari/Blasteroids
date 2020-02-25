@@ -17,18 +17,10 @@ public class GameHandler : MonoBehaviour
 
     void Awake()
     {
-
         ScoreHandler = gameObject.AddComponent<HighscoreHandler>();
 
         // Some dummy high scores.
-        Highscore a = new Highscore("Housepainter", 50.2f, 20, 100, 2, 3f);
-        ScoreHandler.SendHighscore(a);
-        Highscore b = new Highscore("Housepainter", 13.1f, 10, 30, 3, 12.1f);
-        ScoreHandler.SendHighscore(b);
-        Highscore c = new Highscore("Housepainter", 12.5f, 15, 60, 1, 1.1f);
-        ScoreHandler.SendHighscore(c);
-        Highscore d = new Highscore("Housepainter", 89.2f, 65, 87, 9, 102.4f);
-        ScoreHandler.SendHighscore(d);
+        ScoreHandler.AddDummyScores();
     }
 
 
@@ -39,20 +31,11 @@ public class GameHandler : MonoBehaviour
         PlayerBehaviour.PlayerHit += PlayerDamage;
         PlayerBehaviour.MissileFired += MissileCounter;
         MissileController.AsteroidHit += AsteroidHit;
-
-
-        // TODO Check if ResetGame() is an option instead.
-        playTimeCounter = 0;
-        missileCount = 0;
-        asteroidShot = 0;
-        playerLives = 3;
-        levelNumber = 0;
         timeCounter.text = playTimeCounter.ToString("F2");
         asteroidCounter.text = asteroidShot.ToString();
         _player = Instantiate(Player, new Vector3(0, 0, 0), Quaternion.identity);
 
-        SetupLevel();
-
+        StartNewGame();
     }
 
     private void FixedUpdate()
@@ -93,15 +76,12 @@ public class GameHandler : MonoBehaviour
     void LevelComplete()
     {
         _player.GetComponent<PlayerBehaviour>().Dissolve();
-        Debug.Log("LevelComplete");
         DisablePlayerControls();
         StartCoroutine(CompleteMessage());             
     }
 
     IEnumerator CompleteMessage()
     {
-        Debug.Log("CompleteMessage");
-        
         levelComplete.text = "Level " + levelNumber + " Complete!";
         levelComplete.gameObject.SetActive(true);
 
@@ -224,13 +204,12 @@ public class GameHandler : MonoBehaviour
         gameOver.gameObject.SetActive(false);
         finalScore.gameObject.SetActive(false);
 
-        ResetGame();
+        StartNewGame();
     }
 
     // Reset everything and start game from begining.
-    private void ResetGame()
+    private void StartNewGame()
     {
-        Debug.Log("ResetGame");
         asteroidShot = 0;
         playTimeCounter = 0;
         levelNumber = 0;
