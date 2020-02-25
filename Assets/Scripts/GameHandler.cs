@@ -9,7 +9,7 @@ public class GameHandler : MonoBehaviour
     public GameObject Player, live1, live2, live3, AsteroidPrefab, AsteroidPrefabSmall, spawner;
     private HighscoreHandler ScoreHandler;
     private GameObject _player;
-    public Text asteroidCounter, timeCounter, gameOver, finalScore, levelComplete;
+    public Text asteroidCounter, timeCounter, gameOver, finalScore, levelComplete, levelNumberText;
     public float playTimeCounter;
     float totalScore, skillLevel;
     public string playerName;
@@ -137,6 +137,7 @@ public class GameHandler : MonoBehaviour
         Debug.Log("SetupLevel");
         levelCleared = false;
         levelNumber++;
+        levelNumberText.text = levelNumber.ToString();
 
 
         _player.GetComponent<PlayerBehaviour>().ResetPosition();
