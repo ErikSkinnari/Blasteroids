@@ -8,27 +8,28 @@ public class PlayerBehaviour : Wrappable
     public static event PlayerDamage PlayerHit;
     public static event MissileFire MissileFired;
 
-    private float _thrust, _fade;
-    private bool _wasThrusting, _isDissolving, _isBecomingVisible, _isMovable, _isDamageable;
+    private float _thrust, _fade, _shieldThickness;
+    private bool _wasThrusting, _isDissolving, _isBecomingVisible, _isMovable, _isDamageable, _shieldShrinking;
     public Transform barrelPoint;
-    public Material dissolveMaterial, shieldMaterial;
     public Renderer renderer;
-
+    public Material material;
     public float rotationSpeed;
-
     public GameObject thruster, MissilePrefab;
-
     public Rigidbody2D rb;
     
     void Start()
-    {
+    {        
         _fade = 0f;
         _isBecomingVisible = true;
         _wasThrusting = false;
         _thrust = 50f;
+        _shieldThickness = 2f;
         rotationSpeed = 400f;
         thruster.SetActive(false);
         rb = GetComponent<Rigidbody2D>();
+        renderer = GetComponent<SpriteRenderer>();
+        material.SetFloat("_shieldThickness", _shieldThickness);
+        material.SetFloat("_shieldEnabled", 1);
     }
 
     private void Update()
@@ -48,24 +49,35 @@ public class PlayerBehaviour : Wrappable
         if (_isBecomingVisible)
         {
             Debug.Log("Becoming visible.");
+            
             _fade += Time.deltaTime / 2;
 
             if (_fade >= 1f)
             {
                 _fade = 1f;
                 _isBecomingVisible = false;
-                StartCoroutine(DamageImunity());
             }
         }
 
-        dissolveMaterial.SetFloat("_fade", _fade);
+        if(_shieldShrinking)
+        {
+            _shieldThickness -= Time.deltaTime * 2;
+            if(_shieldThickness <= 0) 
+            {
+                _shieldShrinking = false;
+                Debug.Log("Shield shrunk finished");
+                _shieldThickness = 2;
+            }
+        }
+
+        material.SetFloat("_visibility", _fade);
+        material.SetFloat("_shieldThickness", _shieldThickness);
 
         Move();
         if (Input.GetButtonDown("Fire1") || Input.GetKeyDown("space"))
         {
             Fire();
         }
-
     }
 
     public void ResetPosition()
@@ -73,15 +85,27 @@ public class PlayerBehaviour : Wrappable
         transform.position = new Vector3(0f,0f,0f);
         transform.rotation = Quaternion.identity;
         rb.velocity = new Vector2(0,0);
+        StartCoroutine(DamageImunity());
     }
 
     IEnumerator DamageImunity()
     {
+        material.SetFloat("_shieldEnabled", 1);
         _isDamageable = false;
-        renderer.material = shieldMaterial;
-        yield return new WaitForSeconds(3f);
+        _shieldShrinking = true;
+        
+        yield return new WaitForSeconds(4f);
+        
         _isDamageable = true;
-        renderer.material = dissolveMaterial;
+        material.SetFloat("_shieldEnabled", 0);
+        
+    }
+
+    IEnumerator TakeDamage()
+    {
+        material.SetFloat("_damageEnabled", 1);
+        yield return new WaitForSeconds(0.1f);
+        material.SetFloat("_damageEnabled", 0);
     }
 
     void Fire()
@@ -136,10 +160,10 @@ public class PlayerBehaviour : Wrappable
         // Set rotation depending on left/right input
         var rotationValue = -rotationInput * rotationSpeed * Time.deltaTime;
         // Rotate the ship
+        // rb.AddTorque(rotationValue);
         transform.Rotate(0, 0, rotationValue, Space.Self);
 
         transform.position = WrappingBehaviour.WrappingUpdate(this);
-        //ScreenWrap();
     }
 
     public void MovementEnabled(bool enable)
@@ -155,6 +179,7 @@ public class PlayerBehaviour : Wrappable
     public void MakeVisible()
     {
         if (!_isBecomingVisible) _isBecomingVisible = true;
+        StartCoroutine(DamageImunity());
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -164,6 +189,7 @@ public class PlayerBehaviour : Wrappable
 
         if (_isDamageable)
         {
+            StartCoroutine(TakeDamage());
             PlayerHit?.Invoke();
         }
     }
