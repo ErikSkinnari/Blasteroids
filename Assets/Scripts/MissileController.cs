@@ -8,23 +8,38 @@ public class MissileController : MonoBehaviour
     public static event AsteroidHitter AsteroidHit;
     public float missileSpeed;
     public Camera mainCamera;
+    public ObjectPooler ObjectPooler;
 
     public Rigidbody2D rb;
 
     void Start()
     {
         missileSpeed = 10f;
-        rb.velocity = transform.up * missileSpeed;
-        FindObjectOfType<AudioManager>().Play("shot");
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (!GetComponent<Renderer>().isVisible)
         {
-            Destroy(gameObject);
+            ReturnMissileToPool();
         }
+    }
 
+    public void OnEnable()
+    {
+        rb.velocity = transform.up * missileSpeed;
+        FindObjectOfType<AudioManager>().Play("shot");
+        Debug.Log("vel " + rb.velocity);
+    }
+
+    public void OnDisable() 
+    {
+        Debug.Log("disabling ");
+    }
+
+    private void ReturnMissileToPool()
+    {
+        ObjectPooler.ReturnGameObject(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -44,7 +59,7 @@ public class MissileController : MonoBehaviour
 
         AsteroidHit?.Invoke();
 
-        Destroy(gameObject);
+        ReturnMissileToPool();
     }
 
 }

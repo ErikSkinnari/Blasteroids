@@ -15,6 +15,7 @@ public class PlayerBehaviour : Wrappable
     public Material material;
     public float rotationSpeed;
     public GameObject thruster, MissilePrefab;
+    public ObjectPooler ObjectPooler;
     public Rigidbody2D rb;
     
     void Start()
@@ -30,9 +31,19 @@ public class PlayerBehaviour : Wrappable
         renderer = GetComponent<SpriteRenderer>();
         material.SetFloat("_shieldThickness", _shieldThickness);
         material.SetFloat("_shieldEnabled", 1);
+        material.SetFloat("_damageEnabled", 0);    
     }
 
     private void Update()
+    {
+        Move();
+        if (Input.GetButtonDown("Fire1") || Input.GetKeyDown("space"))
+        {
+            Fire();
+        }
+    }
+
+    private void FixedUpdate()
     {
         if (_isDissolving)
         {
@@ -73,11 +84,7 @@ public class PlayerBehaviour : Wrappable
         material.SetFloat("_visibility", _fade);
         material.SetFloat("_shieldThickness", _shieldThickness);
 
-        Move();
-        if (Input.GetButtonDown("Fire1") || Input.GetKeyDown("space"))
-        {
-            Fire();
-        }
+
     }
 
     public void ResetPosition()
@@ -112,7 +119,15 @@ public class PlayerBehaviour : Wrappable
     {
         if (_isMovable)
         {
-            Instantiate(MissilePrefab, barrelPoint.position, barrelPoint.rotation);
+            GameObject missile = ObjectPooler.GetPoolObject();
+            missile.GetComponent<MissileController>().ObjectPooler = this.ObjectPooler;
+            if(missile != null)
+            {
+                missile.transform.position = barrelPoint.position;
+                missile.transform.rotation = barrelPoint.rotation;
+                Debug.Log("rot: " + missile.transform.rotation.eulerAngles);
+                missile.SetActive(true);
+            }
             MissileFired?.Invoke();
         }
     }

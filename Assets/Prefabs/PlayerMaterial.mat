@@ -28,7 +28,7 @@ Material:
     - _damageEnabled: 0
     - _shieldEnabled: 0
     - _shieldThickness: 2
-    - _visibility: 1
+    - _visibility: 0
     m_Colors:
     - Color_4269EC65: {r: 4.707397, g: 0, b: 3.396051, a: 1}
     - Color_80C4AB63: {r: 0, g: 0.6509804, b: 0, a: 1}

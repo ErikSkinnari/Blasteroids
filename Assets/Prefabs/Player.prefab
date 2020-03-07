@@ -4799,6 +4799,7 @@ GameObject:
   - component: {fileID: 2164408824384486530}
   - component: {fileID: 2164408824384486529}
   - component: {fileID: 2164408824384486558}
+  - component: {fileID: 2182213348881884661}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -4914,6 +4915,7 @@ MonoBehaviour:
   thruster: {fileID: 2164408823860032912}
   MissilePrefab: {fileID: 4858928304381083544, guid: 221b4373508706e44833a5f7ed7959d8,
     type: 3}
+  ObjectPooler: {fileID: 2182213348881884661}
   rb: {fileID: 2164408824384486530}
 --- !u!61 &2164408824384486558
 BoxCollider2D:
@@ -4941,6 +4943,21 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.4253402, y: 2.243011}
   m_EdgeRadius: 0
+--- !u!114 &2182213348881884661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2164408824384486528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83b2f528bda53a24abc389b65c72fdda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjectToPool: {fileID: 4858928304381083544, guid: 221b4373508706e44833a5f7ed7959d8,
+    type: 3}
+  ObjectStartAmount: 20
 --- !u!1 &2164408825116146463
 GameObject:
   m_ObjectHideFlags: 0
