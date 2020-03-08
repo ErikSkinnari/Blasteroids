@@ -6,16 +6,10 @@ public class MissileController : MonoBehaviour
 {
     public delegate void AsteroidHitter();
     public static event AsteroidHitter AsteroidHit;
-    public float missileSpeed;
+    private float missileSpeed = 10f;
     public Camera mainCamera;
     public ObjectPooler ObjectPooler;
-
     public Rigidbody2D rb;
-
-    void Start()
-    {
-        missileSpeed = 10f;
-    }
 
     void FixedUpdate()
     {
@@ -25,16 +19,13 @@ public class MissileController : MonoBehaviour
         }
     }
 
-    public void OnEnable()
+    public void OnEnable() => Fire();
+
+    public void Fire()
     {
+        Debug.Log("Firing Missile");
         rb.velocity = transform.up * missileSpeed;
         FindObjectOfType<AudioManager>().Play("shot");
-        Debug.Log("vel " + rb.velocity);
-    }
-
-    public void OnDisable() 
-    {
-        Debug.Log("disabling ");
     }
 
     private void ReturnMissileToPool()
@@ -50,14 +41,14 @@ public class MissileController : MonoBehaviour
         if (collision.GetComponent<Asteroid>() != null)
         {
             collision.GetComponent<Asteroid>().Blast();
+            AsteroidHit?.Invoke();
         }
 
         if (collision.GetComponent<AsteroidSmall>() != null)
         {
             collision.GetComponent<AsteroidSmall>().Blast();
+            AsteroidHit?.Invoke();
         }
-
-        AsteroidHit?.Invoke();
 
         ReturnMissileToPool();
     }

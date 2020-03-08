@@ -125,7 +125,6 @@ public class PlayerBehaviour : Wrappable
             {
                 missile.transform.position = barrelPoint.position;
                 missile.transform.rotation = barrelPoint.rotation;
-                Debug.Log("rot: " + missile.transform.rotation.eulerAngles);
                 missile.SetActive(true);
             }
             MissileFired?.Invoke();

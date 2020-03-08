@@ -5,14 +5,12 @@ using UnityEngine;
 public class ObjectPooler : MonoBehaviour
 {
 
-    //public static ObjectPooler SharedInstance;
     public GameObject ObjectToPool;
     public int ObjectStartAmount;
     private Queue<GameObject> objectPoolQueue = new Queue<GameObject>();
 
     void Awake()
     {
-        //SharedInstance = this;
     }
 
     void Start()
@@ -36,11 +34,8 @@ public class ObjectPooler : MonoBehaviour
         {
             GameObject newGo = (GameObject)Instantiate(ObjectToPool);
             newGo.SetActive(false);
-
             return newGo;
         }
-
-        return null;
     }
 
     public void ReturnGameObject(GameObject go)

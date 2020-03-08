@@ -114,6 +114,7 @@ public class GameHandler : MonoBehaviour
     // Increase level number and give player one more life(max 3), spawn asteroids andflag level as not cleared.
     private void SetupLevel()
     {
+        ResetSounds();
         Debug.Log("SetupLevel");
         levelCleared = false;
         levelNumber++;
@@ -217,11 +218,16 @@ public class GameHandler : MonoBehaviour
         gameEnded = false;
         levelCleared = false;
         levelTransition = false;
-        FindObjectOfType<AudioManager>().Stop("damage");
-        FindObjectOfType<AudioManager>().Stop("warning");
+        ResetSounds();
         SetupLevel();
         UpdateHealthBar();
         UpdateScores();
+    }
+
+    private static void ResetSounds()
+    {
+        FindObjectOfType<AudioManager>().Stop("damage");
+        FindObjectOfType<AudioManager>().Stop("warning");
     }
 
     // Updates visibility and color of the health indicator on top right.
