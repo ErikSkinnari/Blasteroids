@@ -19,7 +19,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8695461828666185968
 Transform:
   m_ObjectHideFlags: 0
@@ -133,7 +133,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a564e118b42d442abc63ea1205e972, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  missileSpeed: 10
   mainCamera: {fileID: 0}
   ObjectPooler: {fileID: 0}
   rb: {fileID: 1579390853961160184}

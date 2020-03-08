@@ -7,6 +7,10 @@ public class GameHandler : MonoBehaviour
 {
     private int playerLives, asteroidShot, levelNumber, missileCount;
     public GameObject Player, live1, live2, live3, AsteroidPrefab, AsteroidPrefabSmall, spawner;
+
+    [SerializeField]
+    public static AudioManager audioManager;
+
     private HighscoreHandler ScoreHandler;
     private GameObject _player;
     public Text asteroidCounter, timeCounter, gameOver, finalScore, levelComplete, levelNumberText;
@@ -17,22 +21,24 @@ public class GameHandler : MonoBehaviour
 
     void Awake()
     {
-        ScoreHandler = gameObject.AddComponent<HighscoreHandler>();
-
-        // Some dummy high scores.
-        ScoreHandler.AddDummyScores();
+        //audioManager = FindObjectOfType<AudioManager>();
     }
 
 
     void Start()
     {
-        gameOver.gameObject.SetActive(false);
-        levelComplete.gameObject.SetActive(false);
+        // Events
         PlayerBehaviour.PlayerHit += PlayerDamage;
         PlayerBehaviour.MissileFired += MissileCounter;
         MissileController.AsteroidHit += AsteroidHit;
+
+        // UI
         timeCounter.text = playTimeCounter.ToString("F2");
         asteroidCounter.text = asteroidShot.ToString();
+        gameOver.gameObject.SetActive(false);
+        levelComplete.gameObject.SetActive(false);
+                
+        // Player
         _player = Instantiate(Player, new Vector3(0, 0, 0), Quaternion.identity);
 
         StartNewGame();
@@ -115,7 +121,6 @@ public class GameHandler : MonoBehaviour
     private void SetupLevel()
     {
         ResetSounds();
-        Debug.Log("SetupLevel");
         levelCleared = false;
         levelNumber++;
         levelNumberText.text = levelNumber.ToString();
@@ -158,6 +163,7 @@ public class GameHandler : MonoBehaviour
     void MissileCounter()
     {
         missileCount++;
+        FindObjectOfType<AudioManager>().Play("shot");
     }
 
     // Update timer value on UI
@@ -197,8 +203,8 @@ public class GameHandler : MonoBehaviour
         finalScore.gameObject.SetActive(true);
         skillLevel = totalScore / missileCount;
 
-        Highscore h = new Highscore("Housepainter", totalScore, asteroidShot, missileCount, levelNumber, skillLevel);
-        ScoreHandler.SendHighscore(h);
+        //Highscore h = new Highscore("Housepainter", totalScore, asteroidShot, missileCount, levelNumber, skillLevel);
+        //ScoreHandler.SendHighscore(h);
 
         yield return new WaitForSeconds(5f);
 
@@ -218,7 +224,6 @@ public class GameHandler : MonoBehaviour
         gameEnded = false;
         levelCleared = false;
         levelTransition = false;
-        ResetSounds();
         SetupLevel();
         UpdateHealthBar();
         UpdateScores();

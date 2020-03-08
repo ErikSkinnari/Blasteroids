@@ -26,7 +26,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _damageEnabled: 0
-    - _shieldEnabled: 1
+    - _shieldEnabled: 0
     - _shieldThickness: 2
     - _visibility: 1
     m_Colors:

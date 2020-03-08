@@ -14,7 +14,7 @@ public class PlayerBehaviour : Wrappable
     public Renderer renderer;
     public Material material;
     public float rotationSpeed;
-    public GameObject thruster, MissilePrefab;
+    public GameObject thruster, MissilePrefab, RotationPoint;
     public ObjectPooler ObjectPooler;
     public Rigidbody2D rb;
     
@@ -90,8 +90,9 @@ public class PlayerBehaviour : Wrappable
     public void ResetPosition()
     {
         transform.position = new Vector3(0f,0f,0f);
-        transform.rotation = Quaternion.identity;
-        rb.velocity = new Vector2(0,0);
+        transform.rotation = Quaternion.Euler(0,0,Random.Range(-180f,180f));
+        rb.velocity = transform.up * Random.Range(0f, 2f);
+        //rb.AddForce(Vector3.forward * Random.Range(1f,50f));
         StartCoroutine(DamageImunity());
     }
 
@@ -175,7 +176,9 @@ public class PlayerBehaviour : Wrappable
         var rotationValue = -rotationInput * rotationSpeed * Time.deltaTime;
         // Rotate the ship
         // rb.AddTorque(rotationValue);
-        transform.Rotate(0, 0, rotationValue, Space.Self);
+        //transform.Rotate(0, 0, rotationValue, Space.Self);
+
+        transform.RotateAround(RotationPoint.transform.position, Vector3.forward, rotationValue);
 
         transform.position = WrappingBehaviour.WrappingUpdate(this);
     }

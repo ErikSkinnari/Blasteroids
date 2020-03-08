@@ -25,7 +25,7 @@ public class MissileController : MonoBehaviour
     {
         Debug.Log("Firing Missile");
         rb.velocity = transform.up * missileSpeed;
-        FindObjectOfType<AudioManager>().Play("shot");
+        
     }
 
     private void ReturnMissileToPool()
